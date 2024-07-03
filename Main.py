@@ -9,7 +9,7 @@
            # if amount > 0:
            #     break
            # else: 
-                print("Amount must be greater than 0.")
+              #  print("Amount must be greater than 0.")
 
     #return amount #Once broken out we will return here and bring us this amount
 
