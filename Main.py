@@ -8,6 +8,7 @@ import pygame
 MAX_LINES = 3
 MAX_BET = 100
 MIN_BET = 1
+JACKPOT_AMOUNT = 500
 
 ROWS = 3
 COLS = 3
@@ -25,6 +26,8 @@ symbol_value = {
     "Raiden": 3,
     "Liu Kang": 2
 }
+
+JACKPOT_SYMBOL = "Scorpion"
 
 # Initialise Pygame for sound
 pygame.mixer.init()
@@ -49,6 +52,7 @@ def load_images(symbols):
 def check_winnings(columns, lines, bet, values):
     winnings = 0
     winning_lines = []
+    jackpot = False
     for line in range(lines):
         symbol = columns[0][line]
         for column in columns:
@@ -58,6 +62,12 @@ def check_winnings(columns, lines, bet, values):
         else:
             winnings += values[symbol] * bet
             winning_lines.append(line + 1)
+            if symbol == JACKPOT_SYMBOL:
+                jackpot = True
+
+    if jackpot:
+        winnings += JACKPOT_AMOUNT
+        winning_lines.append("Jackpot!")
 
     return winnings, winning_lines
 
@@ -137,7 +147,10 @@ def spin(balance_var, frame, sounds):
         play_sound("win", sounds)
     else:
         play_sound("lose", sounds)
-    messagebox.showinfo("Results", f"You won ${winnings}.\nYou won on lines: {', '.join(map(str, winning_lines))}")
+    result_message = f"You won ${winnings}.\nYou won on lines: {', '.join(map(str, winning_lines))}"
+    if "Jackpot!" in winning_lines:
+        result_message += "\nJackpot!"
+    messagebox.showinfo("Results", result_message)
     return winnings - total_bet
 
 def main():
