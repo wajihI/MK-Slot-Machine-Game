@@ -13,11 +13,12 @@ MIN_BET = 1
 ROWS = 3
 COLS = 3
 
+# Updated symbol counts for balanced odds
 symbol_count = {
-    "Scorpion": 2,
-    "Sub-Zero": 4,
+    "Scorpion": 4,
+    "Sub-Zero": 5,
     "Raiden": 6,
-    "Liu Kang": 8
+    "Liu Kang": 7
 }
 
 symbol_value = {
@@ -44,9 +45,24 @@ def play_sound(sound, sounds):
 def load_images(symbols):
     images = {}
     for symbol in symbols:
-        image = Image.open(f"images/{symbol}.png")
-        image = image.resize((100, 100), Image.ANTIALIAS)  # Ensure consistent size
-        images[symbol] = ImageTk.PhotoImage(image)
+        # Load and resize images with transparent borders
+        image = Image.open(f"images/{symbol}.png").convert("RGBA")
+        image = image.resize((100, 100), Image.LANCZOS)
+
+        # Create alpha channel mask to make borders transparent
+        datas = image.getdata()
+        newData = []
+        for item in datas:
+            if item[0] == 255 and item[1] == 255 and item[2] == 255:
+                newData.append((255, 255, 255, 0))
+            else:
+                newData.append(item)
+        image.putdata(newData)
+
+        # Convert Image object to PhotoImage for tkinter
+        img = ImageTk.PhotoImage(image)
+        images[symbol] = img
+
     return images
 
 def load_background_music():
@@ -107,7 +123,7 @@ def print_slot_machine(columns, frame):
             img = images[column[row]]
             lbl = tk.Label(frame, image=img)
             lbl.image = img
-            lbl.grid(row=row, column=i, padx=5, pady=5)
+            lbl.grid(row=row, column=i, padx=10, pady=10)
 
 def deposit(balance_var):
     amount = simpledialog.askinteger("Deposit", "What would you like to deposit?")
@@ -143,7 +159,7 @@ def spin(balance_var, frame, sounds):
             break
 
     threading.Thread(target=animate_spin, args=(load_images(symbol_count), frame)).start()
-    frame.after(1000, lambda: show_results(balance_var, frame, lines, bet, sounds))
+    frame.after(2000, lambda: show_results(balance_var, frame, lines, bet, sounds))
 
 def show_results(balance_var, frame, lines, bet, sounds):
     slots = get_slot_machine_spin(ROWS, COLS, symbol_count)
@@ -163,7 +179,7 @@ def main():
 
     # Set background image
     bg_image = Image.open("images/mortal_kombat_logo.png")
-    bg_image = ImageTk.PhotoImage(bg_image.resize((800, 600), Image.ANTIALIAS))
+    bg_image = ImageTk.PhotoImage(bg_image.resize((800, 600), Image.LANCZOS))
     bg_label = tk.Label(root, image=bg_image)
     bg_label.place(relwidth=1, relheight=1)
 
@@ -173,17 +189,17 @@ def main():
 
     balance_var = tk.IntVar()
 
-    deposit_button = tk.Button(root, text="Deposit", command=lambda: deposit(balance_var))
-    deposit_button.pack()
+    deposit_button = tk.Button(root, text="Deposit", command=lambda: deposit(balance_var), width=10, height=2, font=("Arial", 12))
+    deposit_button.pack(pady=10)
 
     play_frame = tk.Frame(root)
     play_frame.pack()
 
-    play_button = tk.Button(root, text="Play", command=lambda: spin(balance_var, play_frame, sounds))
-    play_button.pack()
+    play_button = tk.Button(root, text="Play", command=lambda: spin(balance_var, play_frame, sounds), width=10, height=2, font=("Arial", 12))
+    play_button.pack(pady=10)
 
-    balance_label = tk.Label(root, textvariable=balance_var)
-    balance_label.pack()
+    balance_label = tk.Label(root, textvariable=balance_var, font=("Arial", 14))
+    balance_label.pack(pady=10)
 
     root.mainloop()
 
