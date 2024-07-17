@@ -1,5 +1,5 @@
 # Slot-Machine-Game
-- Create a slot machine game
+
 
 How it will work:
 - User deposits a certain amount of money
