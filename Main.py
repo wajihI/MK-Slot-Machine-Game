@@ -40,8 +40,14 @@ def load_sounds():
     }
     return sounds
 
+def load_background_music():
+    pygame.mixer.music.load("sounds/background.mp3")
+
 def play_sound(sound, sounds):
     sounds[sound].play()
+
+def play_background_music():
+    pygame.mixer.music.play(-1) # Loops indefinitely
 
 def load_images(symbols):
     images = {}
@@ -157,6 +163,8 @@ def main():
     root = tk.Tk()
     root.title("Mortal Kombat Slot Machine")
     sounds = load_sounds()
+    load_background_music()
+    play_background_music()
 
     balance_var = tk.IntVar()
 
