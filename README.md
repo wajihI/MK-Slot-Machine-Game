@@ -1,5 +1,12 @@
 # Slot-Machine-Game
 
+## Running the program:
+Main.py is the main program file which contains all the necesary code to run the game. 
+
+### Requirements: 
+Program requires tkinter and pygame file to be installed for it to run.
+
+The oldPorgram is just an illustration of the changes made over time and allows me to see the starting and endpoint of the program (can ignore that file).
 
 How it will work:
 - User deposits a certain amount of money
